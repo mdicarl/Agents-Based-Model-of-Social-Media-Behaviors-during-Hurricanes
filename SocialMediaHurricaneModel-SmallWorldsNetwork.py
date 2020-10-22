@@ -35,7 +35,7 @@ class HurricaneModel(Model):
            rnum,
            num_nodes,
            k,
-           avg_node_degree,
+           prob,
            damage_rate,
            urgency_high,
            urgency_medium,
@@ -55,8 +55,8 @@ class HurricaneModel(Model):
        self.reset_randomizer(rnum)
        self.num_nodes = num_nodes
        self.k=k
-       prob = avg_node_degree / self.num_nodes
-       self.G = nx.watts_strogatz_graph(n=self.num_nodes, p=prob, k=self.k,seed=None)  # nx.convert_node_labels_to_integers
+       self.prob = prob
+       self.G = nx.watts_strogatz_graph(n=self.num_nodes, p=self.prob, k=self.k,seed=None)  # nx.convert_node_labels_to_integers
        # Set up model objects
        self.schedule = RandomActivation(self)
        self.grid = mesa.space.NetworkGrid(self.G)
@@ -377,7 +377,6 @@ from mesa.batchrunner import BatchRunner
 fixed_params = {
     "rnum": 1,
     "num_nodes": 20000,
-    "avg_node_degree":200,
     "damage_rate": 5,
     "urgency_high": 4,
     "urgency_medium": 3.5,
@@ -391,6 +390,7 @@ fixed_params = {
 variable_params = {"high_response_behavior_threshold": range(25,55,10),
                    "low_response_behavior_threshold": range(5,35,10),
                    "help_seeking_threshold": range(20,40,10),
+                   "prob":range(0,50,100)
                    "k": range(10,100,10)
                    }
 ##runs with varying thresholds, node degree 300 run again 20000************
